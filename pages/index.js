@@ -3,7 +3,7 @@ import Link from 'next/link'
 import axios from 'axios'
 import { useState } from 'react'
 import FormConv from '../components/FormConv'
-
+import List from '../components/List'
 
 const Section = styled.div`
   margin-top: 15%;
@@ -51,10 +51,11 @@ const Home = ({ coins }) => {
   return (
     <Section >
       <Container>
-        {coins.lenth !== 0 ? <FormConv
+        {coins.length !== 0 ? <FormConv
           listCoins={coins}
           submit={submitFunction}
         /> : <Message>You have not loaded the symbols</Message>}
+        {conversions.length !== 0?<List conversionsList={conversions} />:null}
       </Container>
       
       <Footer>
