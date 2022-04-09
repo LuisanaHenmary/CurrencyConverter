@@ -1,5 +1,8 @@
 import styled from 'styled-components'
 import Link from 'next/link'
+import axios from 'axios'
+import { useState } from 'react'
+import FormConv from '../components/FormConv'
 
 
 const Section = styled.div`
@@ -31,22 +34,58 @@ const Footer = styled.footer`
   }
 `
 
-const Home = () => {
+const Message = styled.p`
+color: red;
+`
+
+const Home = ({ coins }) => {
+  const [conversions, setConversions] = useState([])
+
+  const submitFunction = conversion => {
+    setConversions([
+      ...conversions,
+      conversion
+    ])
+  }
+
   return (
     <Section >
       <Container>
-        
+        {coins.lenth !== 0 ? <FormConv
+          listCoins={coins}
+          submit={submitFunction}
+        /> : <Message>You have not loaded the symbols</Message>}
       </Container>
+      
       <Footer>
         <p>Developer: Luisana Henmary Perez Cardenas</p>
-        <p>affiliations: Kunaisoft, 
-          <Link href="https://fixer.io" > fixer</Link>,<br/>
+        <p>affiliations: Kunaisoft,
+          <Link href="https://fixer.io" > fixer</Link>,<br />
           <Link href="https://www.currencyconverterapi.com" >currencyconverterapi</Link>
         </p>
 
       </Footer>
     </Section>
   )
+}
+
+export const getStaticProps = async () => {
+  const apiKeyFixer = process.env.NEXT_PUBLIC_API_KEY_FIXER
+
+  try {
+    const responce = await axios.get(`http://data.fixer.io/api/symbols?access_key=${apiKeyFixer}`)
+
+    return {
+      props: { coins: Object.keys(responce.data.symbols) }
+    }
+
+  } catch (e) {
+    console.log(e)
+  }
+
+  return {
+    props: { coins: [] }
+  }
 }
 
 export default Home
